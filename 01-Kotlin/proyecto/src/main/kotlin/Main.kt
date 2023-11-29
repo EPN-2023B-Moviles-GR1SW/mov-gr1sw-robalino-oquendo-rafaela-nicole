@@ -49,6 +49,7 @@ fun main() {
     calcularSueldo(10.00)
     calcularSueldo(10.00, 15.00)
     calcularSueldo(10.00, 12.00, 20.00)
+
     calcularSueldo(sueldo = 10.00, tasa = 12.00, bonoEspecial = 20.00)      //Parametros nombrados
     calcularSueldo(10.00, bonoEspecial = 20.00)     //Named Parameters
     calcularSueldo(bonoEspecial = 20.00, sueldo = 10.00, tasa = 14.00)  //Parametros nombrados
