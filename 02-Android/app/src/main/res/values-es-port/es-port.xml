@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="var1">Condicion 4: Portrait español</string>
+    <color name="color_bg">#C2296C</color>
+    <color name="color_text">#F761A3</color>
+</resources>

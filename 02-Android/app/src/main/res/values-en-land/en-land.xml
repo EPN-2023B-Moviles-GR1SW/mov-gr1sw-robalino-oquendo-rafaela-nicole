@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="var1">Condicion 2: Landscape ingles</string>
+    <color name="color_bg">#FFBB86FC</color>
+    <color name="color_text">#7429C2</color>
+</resources>

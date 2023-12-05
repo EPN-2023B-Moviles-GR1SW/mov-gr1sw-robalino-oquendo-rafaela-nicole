@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="var1">Condicion 3: Landscape español</string>
+    <color name="color_bg">#008080</color>
+    <color name="color_text">#00FFFF</color>
+</resources>
