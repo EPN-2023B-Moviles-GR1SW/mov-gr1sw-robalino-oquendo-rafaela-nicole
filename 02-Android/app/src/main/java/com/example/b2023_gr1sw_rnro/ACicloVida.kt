@@ -2,6 +2,7 @@ package com.example.b2023_gr1sw_rnro
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import com.google.android.material.snackbar.Snackbar
 
 class ACicloVida : AppCompatActivity() {
@@ -52,5 +53,27 @@ class ACicloVida : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mostrarSnackBar("OnDestroy")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.run {
+            // Guardar las variables
+            // Primitivos
+            putString("textoGuardado", textoGlobal)
+            // putInt("numeroGuardado, numero)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        //Recuperar variables
+        // Primitivos
+        val textoRecuperado:String? = savedInstanceState.getString("textoGuardado")
+        // val textoRecuperado:Int? = savedInstanceState.getInt("numeroGuardado")
+        if(textoRecuperado!=null){
+            mostrarSnackBar(textoRecuperado)
+            textoGlobal = textoRecuperado
+        }
     }
 }
