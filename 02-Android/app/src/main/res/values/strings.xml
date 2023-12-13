@@ -3,4 +3,10 @@
     <string name="saludo">Buenos dias</string>
 
     <string name="var1">Condicion 1: Portrait ingles (por defecto)</string>
+
+    <string-array name="string_array_opciones_dialogo">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miercoles</item>
+    </string-array>
 </resources>
