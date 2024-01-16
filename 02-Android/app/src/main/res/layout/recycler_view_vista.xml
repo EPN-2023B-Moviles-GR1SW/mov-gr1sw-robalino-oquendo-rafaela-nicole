@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,31 +9,41 @@
         android:id="@+id/btn_dar_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
         android:text="Dar like"
-        tools:layout_editor_absoluteX="343dp"
-        tools:layout_editor_absoluteY="261dp" />
-
-    <TextView
-        android:id="@+id/tv_nombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nombre"
-        tools:layout_editor_absoluteX="128dp"
-        tools:layout_editor_absoluteY="162dp" />
+        app:layout_constraintEnd_toEndOf="@+id/tv_descripcion"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tv_descripcion"
+        app:layout_constraintTop_toBottomOf="@+id/tv_descripcion" />
 
     <TextView
         android:id="@+id/tv_descripcion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Descripcion"
-        tools:layout_editor_absoluteX="336dp"
-        tools:layout_editor_absoluteY="159dp" />
+        tools:layout_editor_absoluteX="314dp"
+        tools:layout_editor_absoluteY="131dp" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_nombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="148dp"
+        android:text="Nombre"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_descripcion"
+        app:layout_constraintEnd_toStartOf="@+id/tv_descripcion"
+        app:layout_constraintTop_toTopOf="@+id/tv_descripcion"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/tv_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
         android:text="Likes"
-        tools:layout_editor_absoluteX="522dp"
-        tools:layout_editor_absoluteY="162dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/tv_descripcion"
+        app:layout_constraintStart_toEndOf="@+id/tv_descripcion"
+        app:layout_constraintTop_toTopOf="@+id/tv_descripcion"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
