@@ -1,3 +1,4 @@
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -34,7 +35,7 @@ class FRecyclerViewAdaptadorNombreDescripcion (
         fun anadirLike(){
             numeroLikes = numeroLikes + 1
             likesTextView.text = numeroLikes.toString()
-            // contexto.aumentarTotalLikes()
+            contexto.aumentarTotalLikes()
         }
     }
 
@@ -42,17 +43,27 @@ class FRecyclerViewAdaptadorNombreDescripcion (
         TODO("Not yet implemented")
     }
 
+    // Setear el layout que vamos a utilizar
     override fun onCreateViewHolder(
         parent:
-        ViewGroup, viewType: Int
-    ): FRecyclerViewAdaptadorNombreDescripcion.MyViewHolder {
-        TODO("Not yet implemented")
+        ViewGroup, viewType: Int): FRecyclerViewAdaptadorNombreDescripcion.MyViewHolder {
+        val itemView =LayoutInflater
+            .from(parent.context)
+            .inflate(
+                R.layout.recycler_view_vista,
+                parent,
+                false
+            )
+        return MyViewHolder(itemView)
     }
 
+    // Setear los datos para la iteracion
     override fun onBindViewHolder(
-        holder: FRecyclerViewAdaptadorNombreDescripcion.MyViewHolder,
-        position: Int
-    ) {
-        TODO("Not yet implemented")
+        holder: MyViewHolder, position: Int) {
+        val entrenadorActual = this.lista[position]
+        holder.nombreTextView.text = entrenadorActual.nombre
+        holder.descripcionTextView.text = entrenadorActual.descripcion
+        holder.likesTextView.text = "0"
+        holder.accionButton.text = "ID:${entrenadorActual.id} " + "Nombre:${entrenadorActual.nombre}"
     }
 }
