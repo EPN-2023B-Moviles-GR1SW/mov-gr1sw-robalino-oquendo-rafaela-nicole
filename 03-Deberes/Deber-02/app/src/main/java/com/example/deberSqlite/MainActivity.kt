@@ -122,4 +122,3 @@ class MainActivity : AppCompatActivity() {
         callbackContenido.launch(intentExplicito)
     }
 }
-t
