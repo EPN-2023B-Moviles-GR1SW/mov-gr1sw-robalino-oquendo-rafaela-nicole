@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "197796605950",
+    "project_id": "examenmovilesib-27206",
+    "storage_bucket": "examenmovilesib-27206.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197796605950:android:0780ef7828f14302549aaf",
+        "android_client_info": {
+          "package_name": "com.example.deberSqlite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1PWccD5AeYwXaP3itc3ulTalabYw-LJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
