@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Deber-03</string>
+
+    <string name="nav_chats">Chats</string>
+    <string name="nav_calls">Calls</string>
+    <string name="nav_highlights">Highlights</string>
+    <string name="nav_people">People</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
