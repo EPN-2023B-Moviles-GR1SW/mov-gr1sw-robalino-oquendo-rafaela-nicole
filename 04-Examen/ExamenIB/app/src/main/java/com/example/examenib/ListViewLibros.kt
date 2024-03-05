@@ -13,26 +13,33 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.examen_ib.modelos.Libro
 import com.google.android.material.snackbar.Snackbar
+
+import android.content.ContentValues.TAG
+import android.util.Log
+import com.example.examen_ib.modelos.Autor
+import com.example.examen_ib.modelos.Libro
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ListViewLibros : AppCompatActivity() {
 
-    // Lista de autores almacenada en memoria
-    val arreglo = BaseDatosMemoria.arregloAutor
-    var posicionArreglo = 0
-    var posicionItemSeleccionado = 0
-    var listaLibro = arrayListOf<Libro>()
-    lateinit var adaptador: ArrayAdapter<Libro>
+    private val db = FirebaseFirestore.getInstance()
+    private val autorCollection = db.collection("autores")
 
-    // Manejo del resultado de la actividad de CRUD de libros mediante ActivityResultContracts
+    private var nameF = ""
+    private var indexSelectedItem = 0
+    private var autorPosition = -1
+    private var librosList = arrayListOf<Libro>()
+    private lateinit var adaptador: ArrayAdapter<Libro>
+
     val callbackContenido =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode === Activity.RESULT_OK) {
                 if (result.data != null) {
-                    adaptador.notifyDataSetChanged() // Actualiza la vista de la lista
+                    // logica negocio
+                    updateLibList()
                 }
             }
         }
@@ -41,38 +48,34 @@ class ListViewLibros : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view_libros)
 
-        // Obtiene la posición del autor seleccionado desde la actividad anterior
-        posicionArreglo = intent.getIntExtra("posicion", -1)
+        val autorName = intent.getStringExtra("AutorName").toString()
+        nameF = intent.getStringExtra("nameF").toString()
+        autorPosition = intent.getIntExtra("AutorPosition", -1)
 
-        // Muestra el nombre del autor en un TextView
         val txtAutor = findViewById<TextView>(R.id.txt_autor)
-        txtAutor.text = "AUTOR: ${arreglo[posicionArreglo].nombre}"
+        if (autorName != null) {
+            txtAutor.text = "Concesionario: ${autorName}"
+        }
 
-        // Obtiene la lista de libros del autor seleccionado
-        listaLibro = arreglo[posicionArreglo].listaLibros
-
-        // Configuración del ListView y su adaptador
         val listView = findViewById<ListView>(R.id.lv_list_libros)
-        adaptador = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            listaLibro
-        )
-        listView.adapter = adaptador
-        adaptador.notifyDataSetChanged() // Asegura que la vista de la lista se actualice correctamente
+        registerForContextMenu(listView)
 
-        // Configuración del botón para añadir un nuevo libro
         val botonAnadirListView = findViewById<Button>(R.id.btn_anadir_libro)
         botonAnadirListView.setOnClickListener {
-            posicionItemSeleccionado = -1 // Indica que no se está editando un libro existente
+            indexSelectedItem = -1
             abrirActividadConParametros(CrudLibros::class.java)
         }
 
-        // Registro del ListView para el menú contextual (ContextMenu)
-        registerForContextMenu(listView)
+        adaptador = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            librosList
+        )
+
+        listView.adapter = adaptador
+        updateLibList()
     }
 
-    // Método llamado al crear el menú contextual
     override fun onCreateContextMenu(
         menu: ContextMenu?,
         v: View?,
@@ -83,10 +86,9 @@ class ListViewLibros : AppCompatActivity() {
         inflater.inflate(R.menu.menulibros, menu)
         val info = menuInfo as AdapterView.AdapterContextMenuInfo
         val posicion = info.position
-        posicionItemSeleccionado = posicion
+        indexSelectedItem = posicion
     }
 
-    // Método llamado al seleccionar una opción del menú contextual
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.mi_editar_l -> {
@@ -94,30 +96,67 @@ class ListViewLibros : AppCompatActivity() {
                 return true
             }
             R.id.mi_eliminar_l -> {
-                // Elimina el libro seleccionado y actualiza la vista de la lista
-                mostrarSnackbar("Libro eliminado")
-                listaLibro.removeAt(posicionItemSeleccionado)
+                val deletedLib = librosList.removeAt(indexSelectedItem)
                 adaptador.notifyDataSetChanged()
+                deleteLibFromFirestore(deletedLib)
                 return true
             }
             else -> super.onContextItemSelected(item)
         }
     }
 
-    // Muestra un Snackbar con el texto proporcionado
+    private fun deleteLibFromFirestore(lib: Libro){
+        autorCollection.document(nameF)
+            .update("listaLibros", librosList)
+            .addOnSuccessListener {
+                mostrarSnackbar("Libro eliminado con exito")
+                adaptador.clear()
+                adaptador.addAll(librosList)
+                adaptador.notifyDataSetChanged()
+            }
+            .addOnFailureListener { e ->
+                mostrarSnackbar("Error al eliminar el libro")
+                librosList.add(indexSelectedItem, lib)
+                adaptador.notifyDataSetChanged()
+            }
+    }
+
     private fun mostrarSnackbar(texto: String) {
         val snack = Snackbar.make(findViewById(R.id.lv_list_libros),
             texto, Snackbar.LENGTH_LONG)
         snack.show()
     }
 
-    // Abre la actividad de CRUD de libros con los parámetros necesarios
     private fun abrirActividadConParametros(clase: Class<*>) {
         val intentExplicito = Intent(this, clase)
-        intentExplicito.putExtra("posicion", posicionItemSeleccionado)
-        intentExplicito.putExtra("posicionArreglo", posicionArreglo)
+        intentExplicito.putExtra("position", indexSelectedItem)
+        intentExplicito.putExtra("autorPosition", autorPosition)
+        intentExplicito.putExtra("nameF", nameF)
+        if (indexSelectedItem != -1){
+            val selectedLib = librosList[indexSelectedItem]
+            intentExplicito.putExtra("libNombreAutor", selectedLib.nombreAutor_Libro)
+            intentExplicito.putExtra("libTitulo", selectedLib.titulo)
+            intentExplicito.putExtra("libAnio", selectedLib.anioPublicacion)
+            intentExplicito.putExtra("libPrecio", selectedLib.precio)
+            intentExplicito.putExtra("libGenero", selectedLib.genero)
+            intentExplicito.putExtra("editar", 0)
+        }
 
-        // Lanza la actividad y espera el resultado utilizando el callbackContenido
         callbackContenido.launch(intentExplicito)
+    }
+
+    private fun updateLibList() {
+        autorCollection.document(nameF).get()
+            .addOnSuccessListener { documentSnapshot ->
+                val autor = documentSnapshot.toObject(Autor::class.java)
+                if (autor != null) {
+                    librosList = (autor.listaLibros as ArrayList<Libro>?)!!
+                    adaptador.clear()
+                    adaptador.addAll(librosList)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error al obtener lista libros", e)
+            }
     }
 }

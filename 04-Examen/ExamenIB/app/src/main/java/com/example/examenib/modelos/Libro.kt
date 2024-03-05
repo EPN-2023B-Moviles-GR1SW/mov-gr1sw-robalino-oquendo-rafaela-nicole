@@ -1,12 +1,13 @@
 package com.example.examen_ib.modelos
 
 data class Libro(
-    var nombreAutor_Libro: String,
-    var titulo: String,
-    var anioPublicacion: Int,
-    var precio: Double,
-    var genero: String,
+    val nombreAutor_Libro: String?,
+    val titulo: String?,
+    val anioPublicacion: Int?,
+    val precio: Double?,
+    val genero: String?,
 ){
+    constructor() : this(null, null, null, null, null)
     override fun toString(): String {
         return "Nombre_Autor: ${nombreAutor_Libro} \nTitulo: ${titulo} \nPrecio: ${precio}"
     }

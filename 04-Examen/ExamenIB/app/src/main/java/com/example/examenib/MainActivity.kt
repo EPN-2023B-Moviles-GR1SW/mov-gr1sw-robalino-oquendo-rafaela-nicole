@@ -13,25 +13,36 @@ import android.widget.Button
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.examen_ib.modelos.Autor
-import com.example.examen_ib.modelos.Libro
 import com.google.android.material.snackbar.Snackbar
 import java.util.ArrayList
 
+import android.content.ContentValues.TAG
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+
+
 class MainActivity : AppCompatActivity() {
 
-    // Lista de autores almacenada en memoria
-    val arreglo = BaseDatosMemoria.arregloAutor
-    var posicionItemSeleccionado = 0
+    private val db = FirebaseFirestore.getInstance()
+    private val autoresCollection = db.collection("autores")
+    private val documentNames = ArrayList<String>()
+
+    private var indexSelectedItem = 0
+    private var autorList = ArrayList<Autor>()
     lateinit var adaptador: ArrayAdapter<Autor>
 
-    // Manejo del resultado de la actividad de CRUD de autores mediante ActivityResultContracts
     val callbackContenido =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode === Activity.RESULT_OK) {
                 if (result.data != null) {
-                    adaptador.notifyDataSetChanged() // Actualiza la vista de la lista
+                    // logica negocio
+                    val data = result.data
+                    val position = data?.getIntExtra("position", -1)
+                    if (position != null && position != -1) {
+                        adaptador.notifyDataSetChanged()
+                    }
                 }
             }
         }
@@ -40,28 +51,65 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Configuración del ListView y su adaptador
         val listView = findViewById<ListView>(R.id.lv_listviewC)
         adaptador = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
-            arreglo
+            autorList
         )
         listView.adapter = adaptador
-        adaptador.notifyDataSetChanged() // Asegura que la vista de la lista se actualice correctamente
+        adaptador.notifyDataSetChanged()
 
-        // Configuración del botón para añadir un nuevo autor
-        val botonAnadirListView = findViewById<Button>(R.id.btn_anadir_concesionario)
+        loadAutores()
+
+        autoresCollection.get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val documentId = document.id
+                    documentNames.add(documentId)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error al obtener los documentos", exception)
+            }
+
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val selectedAutor = autorList[position]
+            val explicitIntent = Intent(this, ListViewLibros::class.java)
+            explicitIntent.putExtra("AutorName", selectedAutor.nombre)
+            explicitIntent.putExtra("nameF", documentNames[indexSelectedItem])
+            callbackContenido.launch(explicitIntent)
+        }
+
+        val botonAnadirListView = findViewById<Button>(R.id.btn_anadir_autor)
         botonAnadirListView.setOnClickListener {
-            posicionItemSeleccionado = -1 // Indica que no se está editando un autor existente
+            indexSelectedItem = -1
             abrirActividadConParametros(CrudAutor::class.java)
         }
 
-        // Registro del ListView para el menú contextual (ContextMenu)
         registerForContextMenu(listView)
     }
 
-    // Método llamado al crear el menú contextual
+    override fun onResume() {
+        super.onResume()
+        loadAutores()
+    }
+
+    private fun loadAutores() {
+        autoresCollection.get()
+            .addOnSuccessListener { result ->
+                autorList.clear()
+                for (document in result) {
+                    val autor = document.toObject(Autor::class.java)
+                    autorList.add(autor)
+                }
+                adaptador.notifyDataSetChanged()
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error al obtener los documentos", exception)
+            }
+    }
+
     override fun onCreateContextMenu(
         menu: ContextMenu?,
         v: View?,
@@ -72,10 +120,9 @@ class MainActivity : AppCompatActivity() {
         inflater.inflate(R.menu.menuautor, menu)
         val info = menuInfo as AdapterView.AdapterContextMenuInfo
         val posicion = info.position
-        posicionItemSeleccionado = posicion
+        indexSelectedItem = posicion
     }
 
-    // Método llamado al seleccionar una opción del menú contextual
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.mi_editar_l -> {
@@ -84,23 +131,42 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.mi_eliminar_l -> {
-                // Elimina el autor seleccionado y actualiza la vista de la lista
-                mostrarSnackbar("Autor ${arreglo[posicionItemSeleccionado].nombre} eliminado")
-                arreglo.removeAt(posicionItemSeleccionado)
-                adaptador.notifyDataSetChanged()
+                val deletedAutor = autorList[indexSelectedItem]
+                deletedAutorFromFirestore(deletedAutor)
                 return true
             }
 
             R.id.mi_libros -> {
-                // Abre la actividad de listado de libros asociados al autor seleccionado
                 abrirActividadConParametros(ListViewLibros::class.java)
                 return true
             }
+
             else -> super.onContextItemSelected(item)
         }
     }
 
-    // Muestra un Snackbar con el texto proporcionado
+    private fun deletedAutorFromFirestore(autor: Autor) {
+        if (autor.nombre != null) {
+            autoresCollection.document(documentNames[indexSelectedItem])
+                .delete()
+                .addOnSuccessListener {
+                    autorList.remove(autor)
+                    adaptador.notifyDataSetChanged()
+                    mostrarSnackbar("Autor eliminado correctamente")
+                    if (indexSelectedItem >= autorList.size) {
+                        indexSelectedItem = autorList.size - 1
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error al eliminar el distribuidor", e)
+                    mostrarSnackbar("No se pudo eliminar el autor")
+                }
+        } else {
+            Log.e(TAG, "No existe autor")
+            mostrarSnackbar("No existe autor")
+        }
+    }
+
     fun mostrarSnackbar(texto: String) {
         val snack = Snackbar.make(
             findViewById(R.id.lv_listviewC),
@@ -109,12 +175,20 @@ class MainActivity : AppCompatActivity() {
         snack.show()
     }
 
-    // Abre la actividad de CRUD de autores con los parámetros necesarios
     private fun abrirActividadConParametros(clase: Class<*>) {
         val intentExplicito = Intent(this, clase)
-        intentExplicito.putExtra("posicion", posicionItemSeleccionado)
+        intentExplicito.putExtra("posicion", indexSelectedItem)
+        if (indexSelectedItem != -1) {
+            val selectedAutor = autorList[indexSelectedItem]
+            intentExplicito.putExtra("autorNombre", selectedAutor.nombre)
+            intentExplicito.putExtra("autorPais", selectedAutor.pais)
+            intentExplicito.putExtra(
+                "autorEdad",
+                selectedAutor.edad
+            )
+            intentExplicito.putExtra("nameF", documentNames[indexSelectedItem])
+        }
 
-        // Lanza la actividad y espera el resultado utilizando el callbackContenido
         callbackContenido.launch(intentExplicito)
     }
 }

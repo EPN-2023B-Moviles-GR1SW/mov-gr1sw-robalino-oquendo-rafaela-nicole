@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="0px">
+
+
+    <LinearLayout
+        android:layout_width="328dp"
+        android:layout_height="57dp"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="0dp">
+
+
+        <ImageButton
+            android:id="@+id/btn_menuHamburguesa"
+            android:layout_width="57dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/boton_redondo"
+            android:backgroundTint="@color/color_gray"
+            app:srcCompat="@drawable/ic_menu" />
+
+        <TextView
+            android:id="@+id/tv_TituloChats"
+            android:layout_width="259dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:text="Chats"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/btn_editar"
+            android:layout_width="57dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/boton_redondo"
+            android:backgroundTint="@color/color_gray"
+            app:srcCompat="@drawable/ic_editar" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+
+        >
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="342dp"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/color_gray"
+            android:drawableLeft="@drawable/ic_buscar"
+            android:text="Search"
+            android:textAlignment="textStart"
+            android:textColor="@color/color_gray2"
+            app:cornerRadius="50dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfileView"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.20"
+            android:scaleType="centerCrop"
+            android:src="@drawable/p1"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfileView1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.20"
+            android:scaleType="centerCrop"
+            android:src="@drawable/p2"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfileView2"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.20"
+            android:scaleType="centerCrop"
+            android:src="@drawable/p3"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfileView3"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.20"
+            android:scaleType="centerCrop"
+            android:src="@drawable/p4"
+            />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom = "10dp"
+        android:layout_margin="16dp"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/list_item_selector"
+            android:paddingHorizontal="10dp"
+
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_gray"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <ImageButton
+                android:id="@+id/imageButtonChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color_gray"
+                android:contentDescription="Mensajes"
+                android:minHeight="60dp"
+                app:srcCompat="@android:drawable/sym_action_chat"
+                app:tint="@color/sky_blue" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Chats"
+                android:textAlignment="center"
+                android:textColor="@color/color_gray2" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color_gray"
+                android:contentDescription="Entrar a llamada"
+                android:minHeight="60dp"
+                app:srcCompat="@drawable/ic_calls"
+                app:tint="@color/color_gray2" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Calls"
+                android:textAlignment="center"
+                android:textColor="@color/color_gray2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color_gray"
+                android:contentDescription="Entrar a highlights"
+                android:minHeight="60dp"
+                app:srcCompat="@drawable/ic_highlights"
+                app:tint="@color/color_gray2" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Highlights"
+                android:textAlignment="center"
+                android:textColor="@color/color_gray2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <ImageButton
+                android:id="@+id/imageButtonStories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color_gray"
+                android:contentDescription="Ver estados"
+                android:minHeight="60dp"
+                app:srcCompat="@drawable/ic_people"
+                app:tint="@color/color_gray2" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="People"
+                android:textAlignment="center"
+                android:textColor="@color/color_gray2" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
