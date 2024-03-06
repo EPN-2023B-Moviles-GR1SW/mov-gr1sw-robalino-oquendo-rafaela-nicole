@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class CrudLibros : AppCompatActivity() {
 
+    // Inicialización de Firebase Firestore
     private val db = FirebaseFirestore.getInstance()
     private val autorCollection = db.collection("autores")
     private var nameF = ""
@@ -23,6 +24,7 @@ class CrudLibros : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crud_libros)
 
+        // Obtener datos del intent
         val selectedIndexItem = intent.getIntExtra("position", -1)
         val editar = intent.getIntExtra("editar", -1)
         val libNombreAutor = intent.getStringExtra("carMarca")
@@ -32,7 +34,9 @@ class CrudLibros : AppCompatActivity() {
         val libGenero = intent.getStringExtra("carEstado")
         nameF = intent.getStringExtra("nameF").toString()
 
+        // Comprobar si se está editando un libro existente
         if (editar == 0) {
+            // Establecer los valores en los EditText
             findViewById<EditText>(R.id.input_nombreAutor_Libro).setText(libNombreAutor)
             findViewById<EditText>(R.id.input_titulo).setText(libTitulo)
             findViewById<EditText>(R.id.input_anioPublicacion).setText(libYear)
@@ -40,8 +44,10 @@ class CrudLibros : AppCompatActivity() {
             findViewById<EditText>(R.id.input_genero).setText(libGenero)
         }
 
+        // Configuración del botón de crear libro
         val botonCrear = findViewById<Button>(R.id.btn_crearLibro)
         botonCrear.setOnClickListener {
+            // Obtener valores de los EditText
             val nombreAutor_Libro = findViewById<EditText>(R.id.input_nombreAutor_Libro).text.toString()
             val titulo = findViewById<EditText>(R.id.input_titulo).text.toString()
             val anioPublicacion = findViewById<EditText>(R.id.input_anioPublicacion).text.toString().toInt()
@@ -49,20 +55,24 @@ class CrudLibros : AppCompatActivity() {
             val genero = findViewById<EditText>(R.id.input_genero).text.toString()
             val libList = arrayListOf<Libro>()
 
+            // Crear un objeto Libro
             val car = Libro(nombreAutor_Libro, titulo, anioPublicacion, precio, genero)
 
             libList.add(car)
 
+            // Verificar si se está creando un nuevo libro o actualizando uno existente
             if (selectedIndexItem == -1) {
+                // Agregar un nuevo libro a la lista de libros del autor en Firestore
                 autorCollection.document(nameF)
                     .update("listaLibros", libList)
                     .addOnSuccessListener {
-                        devolverRespuesta(-1)
+                        devolverRespuesta(-1) // Devolver respuesta exitosa
                     }
                     .addOnFailureListener { e ->
                         Log.e(TAG, "Error al agregar un nuevo libro", e)
                     }
             } else {
+                // Obtener el autor de Firestore y actualizar la lista de libros
                 autorCollection.document(nameF)
                     .get()
                     .addOnSuccessListener { documentSnapshot ->
@@ -75,7 +85,7 @@ class CrudLibros : AppCompatActivity() {
                                 autorCollection.document(nameF)
                                     .set(autor.copy(listaLibros = updateLibList))
                                     .addOnSuccessListener {
-                                        devolverRespuesta(selectedIndexItem)
+                                        devolverRespuesta(selectedIndexItem) // Devolver respuesta exitosa
                                     }
                                     .addOnFailureListener { e ->
                                         Log.e(TAG, "Error al actualizar el libro", e)
@@ -93,6 +103,7 @@ class CrudLibros : AppCompatActivity() {
 
     }
 
+    // Método para devolver la respuesta a la actividad anterior
     private fun devolverRespuesta(position: Int) {
         val intentDevolverParametros = Intent()
         intentDevolverParametros.putExtra("position", position)
@@ -102,6 +113,6 @@ class CrudLibros : AppCompatActivity() {
             intentDevolverParametros
         )
 
-        finish()
+        finish() // Finalizar la actividad actual y regresar a la anterior
     }
 }
