@@ -27,11 +27,11 @@ class CrudLibros : AppCompatActivity() {
         // Obtener datos del intent
         val selectedIndexItem = intent.getIntExtra("position", -1)
         val editar = intent.getIntExtra("editar", -1)
-        val libNombreAutor = intent.getStringExtra("carMarca")
-        val libTitulo = intent.getStringExtra("carModelo")
-        val libYear = intent.getStringExtra("carYear")
-        val libPrecio = intent.getStringExtra("carPrecio")
-        val libGenero = intent.getStringExtra("carEstado")
+        val libNombreAutor = intent.getStringExtra("autNombre")
+        val libTitulo = intent.getStringExtra("autTitulo")
+        val libYear = intent.getStringExtra("autAnio")
+        val libPrecio = intent.getStringExtra("autPrecio")
+        val libGenero = intent.getStringExtra("autGenero")
         nameF = intent.getStringExtra("nameF").toString()
 
         // Comprobar si se está editando un libro existente
@@ -56,9 +56,9 @@ class CrudLibros : AppCompatActivity() {
             val libList = arrayListOf<Libro>()
 
             // Crear un objeto Libro
-            val car = Libro(nombreAutor_Libro, titulo, anioPublicacion, precio, genero)
+            val libro = Libro(nombreAutor_Libro, titulo, anioPublicacion, precio, genero)
 
-            libList.add(car)
+            libList.add(libro)
 
             // Verificar si se está creando un nuevo libro o actualizando uno existente
             if (selectedIndexItem == -1) {
@@ -79,9 +79,9 @@ class CrudLibros : AppCompatActivity() {
                         val autor = documentSnapshot.toObject(Autor::class.java)
                         autor?.let { autor ->
                             val updateLibList = autor.listaLibros?.toMutableList()
-                            val libIndex = updateLibList?.indexOfFirst { it.nombreAutor_Libro == car.nombreAutor_Libro }
+                            val libIndex = updateLibList?.indexOfFirst { it.nombreAutor_Libro == libro.nombreAutor_Libro }
                             if (libIndex != null && libIndex != -1) {
-                                updateLibList[libIndex] = car
+                                updateLibList[libIndex] = libro
                                 autorCollection.document(nameF)
                                     .set(autor.copy(listaLibros = updateLibList))
                                     .addOnSuccessListener {

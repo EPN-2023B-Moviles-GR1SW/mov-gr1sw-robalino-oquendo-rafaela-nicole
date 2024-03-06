@@ -25,7 +25,7 @@ class CrudAutor : AppCompatActivity() {
 
         // Obtener datos del intent
         posicionItemSeleccionado = intent.getIntExtra("posicion", -1)
-        val autorNombre = intent.getStringExtra("concesionarioNombre")
+        val autorNombre = intent.getStringExtra("autorNombre")
         val autorPais = intent.getStringExtra("autorPais")
         val autorEdad = intent.getIntExtra("autorEdad", 0)
 
